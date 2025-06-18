@@ -1,14 +1,18 @@
-import { useRef, useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles";
-export default function LabelInput({ title, data, type }) {
+export default function LabelInput({ pass, title, data, type }) {
     const [val, setVal] = useState(data);
-    const ref = useRef();
-    const handleChange = () => setVal(ref.current.value);
+
+    useEffect(() => {
+        setVal(data);
+    }, [data]);
+
+    const handleChange = () => setVal(pass.current.value);
     return (
         <div>
             <label className={styles.formLabel}>{title}</label>
             <input
-                ref={ref}
+                ref={pass}
                 onChange={handleChange}
                 type={type}
                 className={styles.inputField}

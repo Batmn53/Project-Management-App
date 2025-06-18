@@ -1,28 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./styles";
 import Sidebar from "./components/Sidebar.jsx";
 import AddProjectMenu from "./components/AddProjectMenu.jsx";
 import EmptyProject from "./components/EmptyProject";
 function App() {
+    const [projects, setProjects] = useState([]); //Stores and sets projects
+    const [currentProject, setCurrentProject] = useState(null); //Stores the state of whether or not the user is currently adding a project or not
 
-    const [projects, setProjects] = useState([]);//Stores and sets projects
-    const [currentProject, setCurrentProject] = useState(null);//Stores the state of whether or not the user is currently adding a projet or not
+    useEffect(() => {
+        if (projects.length > 0) {
+            setCurrentProject(null); // last added project
+        }
+    }, [projects]);
 
     const handleAdd = () => {
-      const newProject = {title: "default", description: "", date: ""};
-      setProjects(prev => [...prev, newProject]);
-      setCurrentProject(newProject);
-      console.log(projects);
+        setProjects((prevProjects) => [
+            ...prevProjects,
+            { title: `default ${prevProjects.length}`, description: "", date: "", id: prevProjects.length},
+        ]);
+        console.log(projects[projects.length-1]);
+    };
+
+    function handleSelectProject(index) {
+        setCurrentProject(projects[index]);
+    }
+
+    function handleSaveSelectedProject(t, des, dt, index) {
+        setProjects((prev) => {
+            const updated = [...prev];
+            updated[index] = {
+                ...updated[index], title: t, description: des, date: dt
+            };
+            return updated;
+        })
     }
 
     return (
         <>
             <main className={styles.mainContainer}>
-                <Sidebar handleIsAdding={handleAdd} projects={projects}/>
+                <Sidebar handleSelectProject={handleSelectProject} handleIsAdding={handleAdd} projects={projects} />
                 {currentProject === null ? (
-                    <EmptyProject handleAdding={handleAdd}/>
+                    <EmptyProject handleAdding={handleAdd} />
                 ) : (
-                    <AddProjectMenu project={currentProject}/>
+                    <AddProjectMenu handle={handleSaveSelectedProject} project={currentProject} />
                 )}
             </main>
         </>
