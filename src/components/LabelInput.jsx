@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
 import styles from "../styles";
-export default function LabelInput({ pass, title, data, type }) {
-    const [val, setVal] = useState(data);
-
-    useEffect(() => {
-        setVal(data);
-    }, [data]);
-
-    const handleChange = () => setVal(pass.current.value);
+export default function LabelInput({ value, setValue, title, type }) {
+    if(value==="" && type==="date") {
+        const today = new Date().toISOString().split("T")[0];
+        setValue(today);
+    }
     return (
         <div>
             <label className={styles.formLabel}>{title}</label>
             <input
-                ref={pass}
-                onChange={handleChange}
+                onChange={(e) => setValue(e.target.value)}
                 type={type}
                 className={styles.inputField}
-                value={val}
+                value={value}
             />
         </div>
     );
